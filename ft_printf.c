@@ -2,20 +2,20 @@
 
 static t_args	parse_format(t_args args)
 {
-	const char	*pf;
-
 	args.fmt++;
-	pf = args.fmt;
-	while (*pf && ft_strchr(FORMAT_TYPES, *pf) == NULL)
-		pf++;
-	args.type = *pf;
+	while (*args.fmt && ft_strchr(FORMAT_TYPES, *args.fmt) == NULL)
+	{
+		args = set_format_flags(args);
+		if (args.error)
+			return (args);
+	}
+	args.type = *args.fmt;
 	args = convert_to_str(args);
 	if (args.error)
 		return (args);
-	args.fmt = pf + 1;
-	args = set_width(args); // for bonus
-	args = copy_correct_width(args);
-	return (args);
+	args.fmt++;
+	args = set_field_width(args);
+	return (set_output(args));
 }
 
 static t_args	format_specifier_mode(t_args args)
@@ -29,6 +29,7 @@ static t_args	format_specifier_mode(t_args args)
 
 static t_args	normal_char_mode(t_args args)
 {
+	args = clear_fmt_info(args);
 	while (*args.fmt && *args.fmt != '%')
 	{
 		args.output[args.len_output] = *args.fmt;

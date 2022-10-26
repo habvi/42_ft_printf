@@ -1,24 +1,32 @@
-SRCS		=	ft_printf.c ft_printf_sub.c \
-				convert_to_str1.c convert_to_str2.c \
+SRCS		=	ft_printf.c \
+				handle_t_args.c \
+				parse_format.c \
+				convert_to_str.c \
+				convert_to_str2.c \
 				strdup_for_printf.c \
 				itoa_utoa_for_printf.c\
-				xtoa_for_printf.c \
-				ptoa_for_printf.c
+				ptoa_xtoa_for_printf.c \
+				set_field.c \
+				set_output.c \
+				utils.c
 
 OBJS		= 	$(SRCS:.c=.o)
+
+# LIBFT		=	./libft
 
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 AR			= ar rcs
-# INCLUDES	= -I includes
+# INCLUDES	= -I libft
+# INCLUDES	= -I libft/libft.h
 
 NAME	= libftprintf.a
 
 all: $(NAME)
 
 $(NAME): $(OBJS) # todo
-	$(MAKE) -C ./libft
-	cp libft/libft.a $(NAME)
+	# $(MAKE) -C $(LIBFT)
+	# cp $(LIBFT)/libft.a $(NAME)
 	$(CC) -c $(CFLAGS) $(SRCS)
 	$(AR) $(NAME) $(OBJS)
 

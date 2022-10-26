@@ -1,5 +1,22 @@
 #include "ft_printf.h"
 
+static size_t	strlen_for_printf(const char *s, t_args *args)
+{
+	size_t	len;
+
+	len = 0;
+	while (s[len] != '\0')
+	{
+		if (len == INT_MAX)
+		{
+			args->error = ERROR_OVERFLOW;
+			return (0);
+		}
+		len++;
+	}
+	return (len);
+}
+
 static void	strlcpy_for_printf(char *dst, const char *src, size_t dstsize)
 {
 	size_t	i;
@@ -18,7 +35,9 @@ t_args	strdup_for_printf(t_args args, const char *src)
 	size_t	len_s;
 	char	*dst;
 
-	len_s = ft_strlen(src);
+	len_s = strlen_for_printf(src, &args);
+	if (args.error)
+		return (args);
 	dst = (char *)malloc(sizeof(char) * (len_s + 1));
 	if (dst == NULL)
 	{

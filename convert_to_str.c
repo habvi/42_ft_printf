@@ -39,5 +39,30 @@ t_args	convert_di_to_str(t_args args)
 {
 	const int	num = va_arg(args.args_list, int);
 
+	if (num < 0)
+		args.is_negative_num = true;
 	return (itoa_for_printf(num, args));
+}
+
+t_args	convert_to_str(t_args args)
+{
+	const char	c = args.type;
+
+	if (c == 'c')
+		args = convert_c_to_str(args);
+	else if (c == 's')
+		args = convert_s_to_str(args);
+	else if (c == 'p')
+		args = convert_p_to_str(args);
+	else if (c == 'd' || c == 'i')
+		args = convert_di_to_str(args);
+	else if (c == 'u')
+		args = convert_u_to_str(args);
+	else if (c == 'x')
+		args = convert_x_to_str(args);
+	else if (c == 'X')
+		args = convert_upoperx_to_str(args);
+	else if (c == '%')
+		args = convert_percent_to_str(args);
+	return (args);
 }
