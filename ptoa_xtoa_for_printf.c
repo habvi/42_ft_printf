@@ -32,9 +32,7 @@ t_args	ptoa_for_printf(unsigned long long n, t_args args)
 	size_t	len;
 
 	num = n;
-	len = count_length(num, 0) + 2;
-	if (n == 0)
-		len = 3;
+	len = count_length(num, 0) + 2 + (n == 0);
 	args.dup_str = set_to_list_for_p(num, 2, len);
 	if (args.dup_str == NULL)
 	{
@@ -76,9 +74,7 @@ t_args	xtoa_for_printf(unsigned int n, t_args args, bool is_upper)
 	size_t	len;
 
 	num = n;
-	len = count_length(num, 0);
-	if (n == 0)
-		len = 1;
+	len = count_length(num, 0) + (n == 0);
 	args.dup_str = set_to_list_for_x(num, len, is_upper);
 	if (args.dup_str == NULL)
 		args.error = ERROR_MALLOC;

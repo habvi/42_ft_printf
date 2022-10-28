@@ -7,7 +7,7 @@ static size_t	count_length(size_t num, size_t now)
 	return (count_length(num / 10, now + 1));
 }
 
-static char	*set_to_list(size_t num, size_t len, bool is_minus)
+static char	*set_to_list(size_t num, size_t len)
 {
 	char	*res;
 	size_t	i;
@@ -22,8 +22,6 @@ static char	*set_to_list(size_t num, size_t len, bool is_minus)
 		num /= 10;
 		i++;
 	}
-	if (is_minus)
-		res[0] = '-';
 	res[len] = '\0';
 	return (res);
 }
@@ -32,14 +30,10 @@ t_args	itoa_for_printf(int n, t_args args)
 {
 	size_t	num;
 	size_t	len;
-	bool	is_minus;
 
-	is_minus = false;
-	len = 0;
 	if (n < 0)
 	{
-		is_minus = true;
-		len++;
+		args.is_negative_num = true;
 		if (n == INT_MIN)
 			num = (size_t)(-(n + 1)) + 1;
 		else
@@ -47,10 +41,8 @@ t_args	itoa_for_printf(int n, t_args args)
 	}
 	else
 		num = n;
-	len += count_length(num, 0);
-	if (n == 0)
-		len = 1;
-	args.dup_str = set_to_list(num, len, is_minus);
+	len = count_length(num, 0) + (n == 0);
+	args.dup_str = set_to_list(num, len);
 	if (args.dup_str == NULL)
 		args.error = ERROR_MALLOC;
 	args.len_str = len;
@@ -63,10 +55,8 @@ t_args	utoa_for_printf(unsigned int n, t_args args)
 	size_t	len;
 
 	num = n;
-	len = count_length(num, 0);
-	if (n == 0)
-		len = 1;
-	args.dup_str = set_to_list(num, len, false);
+	len = count_length(num, 0) + (n == 0);
+	args.dup_str = set_to_list(num, len);
 	if (args.dup_str == NULL)
 		args.error = ERROR_MALLOC;
 	args.len_str = len;

@@ -9,6 +9,7 @@ static t_args	parse_format(t_args args)
 		if (args.error)
 			return (args);
 	}
+	check_ignored_flags(&args);
 	args.type = *args.fmt;
 	args = convert_to_str(args);
 	if (args.error)
@@ -29,7 +30,6 @@ static t_args	format_specifier_mode(t_args args)
 
 static t_args	normal_char_mode(t_args args)
 {
-	args = clear_fmt_info(args);
 	while (*args.fmt && *args.fmt != '%')
 	{
 		args.output[args.len_output] = *args.fmt;
@@ -53,7 +53,10 @@ static t_args	format_specifier_or_not(t_args args)
 	while (*args.fmt)
 	{
 		if (args.is_format_specifier)
+		{
 			args = format_specifier_mode(args);
+			args = clear_fmt_info(args);
+		}
 		else
 			args = normal_char_mode(args);
 		if (args.error)

@@ -7,9 +7,9 @@ static bool	is_overflow(size_t num, int c)
 
 	ov_div = INT_MAX / 10;
 	ov_mod = INT_MAX % 10;
-	if (num > ov_div)
+	if (num >= ov_div)
 		return (true);
-	if (num == ov_div && (size_t)c - '0' > ov_mod)
+	if (num == ov_div && (size_t)c - '0' >= ov_mod)
 		return (true);
 	return (false);
 }
@@ -20,7 +20,7 @@ static t_args	atoi_for_printf(t_args args, size_t kind)
 
 	if (kind == WIDTH)
 		num = &args.width;
-	else if (kind == PRECISION)
+	else
 		num = &args.precision;
 	if (is_overflow(*num, *args.fmt))
 	{
@@ -31,7 +31,6 @@ static t_args	atoi_for_printf(t_args args, size_t kind)
 	return (args);
 }
 
-// ignore spaces
 t_args	set_format_flags(t_args args)
 {
 	const char	c = *args.fmt;
@@ -52,8 +51,18 @@ t_args	set_format_flags(t_args args)
 		args.zero = true;
 	else if (c == '.')
 		args.dot = true;
+	else if (c == ' ')
+		args.space = true;
 	else if (ft_isdigit(c))
 		args = atoi_for_printf(args, WIDTH);
 	args.fmt++;
 	return (args);
+}
+
+void	check_ignored_flags(t_args *args)
+{
+	if (args->minus && args->zero)
+		args->zero = false;
+	if (args->plus && args->space)
+		args->space = false;
 }

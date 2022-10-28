@@ -12,21 +12,15 @@ SRCS		=	ft_printf.c \
 
 OBJS		= 	$(SRCS:.c=.o)
 
-# LIBFT		=	./libft
-
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 AR			= ar rcs
-# INCLUDES	= -I libft
-# INCLUDES	= -I libft/libft.h
 
 NAME	= libftprintf.a
 
 all: $(NAME)
 
-$(NAME): $(OBJS) # todo
-	# $(MAKE) -C $(LIBFT)
-	# cp $(LIBFT)/libft.a $(NAME)
+$(NAME): $(OBJS)
 	$(CC) -c $(CFLAGS) $(SRCS)
 	$(AR) $(NAME) $(OBJS)
 

@@ -1,7 +1,6 @@
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-// # include "libft/libft.h"
 # include <stdarg.h>
 # include <stdbool.h>
 # include <unistd.h>
@@ -33,6 +32,7 @@ typedef struct s_args
 	size_t		width;
 	bool		dot;
 	size_t		precision;
+	bool		space;
 	char		type;
 	bool		is_negative_num;
 	char		*dup_str;
@@ -54,6 +54,7 @@ void	init_t_args(t_args *args, const char *format);
 
 // parse_format.c
 t_args	set_format_flags(t_args args);
+void	check_ignored_flags(t_args *args);
 
 // convert_to_str.c
 t_args	convert_c_to_str(t_args args);
@@ -86,5 +87,6 @@ char	*ft_strchr(const char *s, int int_c);
 int		ft_isdigit(int c);
 int		ft_toupper(int c);
 size_t	ft_max(size_t x, size_t y);
+bool	is_zero_num(t_args args);
 
 #endif
