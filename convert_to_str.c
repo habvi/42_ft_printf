@@ -1,6 +1,6 @@
 #include "ft_printf.h"
 
-t_args	convert_c_to_str(t_args args)
+static t_args	convert_c_to_str(t_args args)
 {
 	const char	c = va_arg(args.args_list, int);
 	char		s_null[1];
@@ -18,7 +18,7 @@ t_args	convert_c_to_str(t_args args)
 	return (strdup_for_printf(args, s));
 }
 
-t_args	convert_s_to_str(t_args args)
+static t_args	convert_s_to_str(t_args args)
 {
 	const char	*s = va_arg(args.args_list, char*);
 
@@ -27,7 +27,7 @@ t_args	convert_s_to_str(t_args args)
 	return (strdup_for_printf(args, s));
 }
 
-t_args	convert_p_to_str(t_args args)
+static t_args	convert_p_to_str(t_args args)
 {
 	unsigned long long	addr;
 
@@ -35,7 +35,7 @@ t_args	convert_p_to_str(t_args args)
 	return (ptoa_for_printf(addr, args));
 }
 
-t_args	convert_di_to_str(t_args args)
+static t_args	convert_di_to_str(t_args args)
 {
 	const int	num = va_arg(args.args_list, int);
 

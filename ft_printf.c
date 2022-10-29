@@ -16,6 +16,12 @@ static t_args	parse_format(t_args args)
 		return (args);
 	args.fmt++;
 	args = set_field_width(args);
+	args.output = (char *)malloc(sizeof(char) * args.field_width + 1);
+	if (args.output == NULL)
+	{
+		args.error = ERROR_MALLOC;
+		return (free_dup_str(args));
+	}
 	return (set_output(args));
 }
 
@@ -25,23 +31,22 @@ static t_args	format_specifier_mode(t_args args)
 	if (args.error)
 		return (args);
 	args.is_format_specifier = false;
-	return (args);
+	return (put_output(args));
 }
 
 static t_args	normal_char_mode(t_args args)
 {
 	while (*args.fmt && *args.fmt != '%')
 	{
-		args.output[args.len_output] = *args.fmt;
-		if (args.len_output == INT_MAX)
+		if (args.total_len == INT_MAX)
 		{
-			args.error = ERROR_OVERFLOW;
+			args.error = EXIT;
 			return (args);
 		}
-		args.len_output++;
+		write(STDOUT, args.fmt, 1);
+		args.total_len++;
 		args.fmt++;
 	}
-	args.output[args.len_output] = '\0';
 	args.is_format_specifier = true;
 	if (!args.fmt)
 		args.fmt++;
@@ -71,16 +76,9 @@ int	ft_printf(const char *format, ...)
 
 	va_start(args.args_list, format);
 	init_t_args(&args, format);
-	if (args.error == ERROR_MALLOC)
-		return (ERROR);
 	args = format_specifier_or_not(args);
 	va_end(args.args_list);
 	if (args.error)
-	{
-		free(args.output);
 		return (ERROR);
-	}
-	put_output(args);
-	free(args.output);
-	return (args.len_output);
+	return (args.total_len);
 }

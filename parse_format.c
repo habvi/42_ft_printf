@@ -24,7 +24,10 @@ static t_args	atoi_for_printf(t_args args, size_t kind)
 		num = &args.precision;
 	if (is_overflow(*num, *args.fmt))
 	{
-		args.error = ERROR_OVERFLOW;
+		if (kind == WIDTH)
+			args.error = ERROR_OVERFLOW;
+		else
+			*num = INT_MAX;
 		return (args);
 	}
 	*num = *num * 10 + *args.fmt - '0';
@@ -46,7 +49,7 @@ t_args	set_format_flags(t_args args)
 	else if (c == '+')
 		args.plus = true;
 	else if (c == '#')
-		args.sharp = true;
+		args.hash = true;
 	else if (c == '0' && !ft_isdigit(*(args.fmt - 1)))
 		args.zero = true;
 	else if (c == '.')

@@ -16,7 +16,7 @@ char	*ft_strchr(const char *s, int int_c)
 	return (NULL);
 }
 
-int	ft_isdigit(int c)
+bool	ft_isdigit(int c)
 {
 	return ('0' <= c && c <= '9');
 }
@@ -37,5 +37,5 @@ size_t	ft_max(size_t x, size_t y)
 
 bool	is_zero_num(t_args args)
 {
-	return (args.len_str == 1 && args.dup_str[0] == '0');
+	return (args.len_str <= 1 && args.dup_str[0] == '0');
 }
