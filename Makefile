@@ -16,12 +16,11 @@ CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 AR			= ar rcs
 
-NAME	= libftprintf.a
+NAME		= libftprintf.a
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -c $(CFLAGS) $(SRCS)
 	$(AR) $(NAME) $(OBJS)
 
 bonus: all
