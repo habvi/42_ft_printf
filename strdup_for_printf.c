@@ -1,6 +1,6 @@
 #include "ft_printf.h"
 
-static size_t	strlen_for_printf(const char *s, t_args *args)
+static size_t	strlen_for_printf(const char *s, t_info *info)
 {
 	size_t	len;
 
@@ -9,7 +9,7 @@ static size_t	strlen_for_printf(const char *s, t_args *args)
 	{
 		if (len == INT_MAX)
 		{
-			args->error = ERROR_OVERFLOW;
+			info->error = ERROR_OVERFLOW;
 			return (0);
 		}
 		len++;
@@ -30,24 +30,23 @@ static void	strlcpy_for_printf(char *dst, const char *src, size_t dstsize)
 	dst[i] = '\0';
 }
 
-t_args	strdup_for_printf(t_args args, const char *src)
+void	strdup_for_printf(t_info *info, const char *src)
 {
 	size_t	len_s;
 	char	*dst;
 
-	len_s = strlen_for_printf(src, &args);
-	if (args.error)
-		return (args);
+	len_s = strlen_for_printf(src, info);
+	if (info->error)
+		return ;
 	dst = (char *)malloc(sizeof(char) * (len_s + 1));
 	if (dst == NULL)
 	{
-		args.error = ERROR_MALLOC;
-		return (args);
+		info->error = ERROR_MALLOC;
+		return ;
 	}
 	strlcpy_for_printf(dst, src, len_s + 1);
-	args.dup_str = dst;
-	if (args.type == 'c' && !len_s)
+	info->dup_str = dst;
+	if (info->type == 'c' && !len_s)
 		len_s++;
-	args.len_str = len_s;
-	return (args);
+	info->len_str = len_s;
 }

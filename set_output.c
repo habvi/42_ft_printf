@@ -1,86 +1,85 @@
 #include "ft_printf.h"
 
-static t_args	fill_n_with_c(t_args args, size_t size, char c)
+static void	fill_n_with_c(t_info *info, size_t size, char c)
 {
 	size_t	i;
 
 	i = 0;
 	while (i < size)
 	{
-		args.output[args.index] = c;
-		args.index++;
+		info->output[info->index] = c;
+		info->index++;
 		i++;
 	}
-	return (args);
 }
 
-static	t_args	copy_str(t_args args, bool is_bonus)
+static void	copy_str(t_info *info, bool is_bonus)
 {
 	size_t	i;
 
-	if (!is_bonus && args.is_negative_num)
-		args = fill_n_with_c(args, 1, '-');
+	if (!is_bonus && info->is_negative_num)
+		fill_n_with_c(info, 1, '-');
 	i = 0;
-	while (i < args.len_str)
+	while (i < info->len_str)
 	{
-		args.output[args.index] = args.dup_str[i];
-		args.index++;
+		info->output[info->index] = info->dup_str[i];
+		info->index++;
 		i++;
 	}
-	args.output[args.index] = '\0';
-	return (free_dup_str(args));
+	info->output[info->index] = '\0';
+	free_dup_str(info);
 }
 
-static t_args	set_sign_0x_space(t_args args)
+static void	set_sign_0x_space(t_info *info)
 {
-	if (args.is_negative_num)
-		args = fill_n_with_c(args, 1, '-');
-	else if (args.plus && (args.type == 'd' || args.type == 'i'))
-		args = fill_n_with_c(args, 1, '+');
-	else if (args.hash && (args.type == 'x' || args.type == 'X') \
-		&& !is_zero_num(args))
+	if (info->is_negative_num)
+		fill_n_with_c(info, 1, '-');
+	else if (info->plus && (info->type == 'd' || info->type == 'i'))
+		fill_n_with_c(info, 1, '+');
+	else if (info->hash && (info->type == 'x' || info->type == 'X') \
+		&& !is_zero_num(info))
 	{
-		args = fill_n_with_c(args, 1, '0');
-		args = fill_n_with_c(args, 1, args.type);
+		fill_n_with_c(info, 1, '0');
+		fill_n_with_c(info, 1, info->type);
 	}
-	else if (args.space && args.type != 's')
-		args = fill_n_with_c(args, 1, ' ');
-	return (args);
+	else if (info->space && info->type != 's')
+		fill_n_with_c(info, 1, ' ');
 }
 
-static t_args	calc_len_zero(t_args args)
+static void	calc_len_zero(t_info *info)
 {
-	args.len_zero = 0;
-	if (!args.precision)
+	info->len_zero = 0;
+	if (!info->precision)
 	{
-		if (args.zero && args.width > args.len_flagged_str)
-			args.len_zero = args.width - args.len_flagged_str;
+		if (info->zero && info->width > info->len_flagged_str)
+			info->len_zero = info->width - info->len_flagged_str;
 	}
 	else
 	{
-		if (args.len_str && args.precision > args.len_str)
-			args.len_zero = args.precision - args.len_str;
+		if (info->len_str && info->precision > info->len_str)
+			info->len_zero = info->precision - info->len_str;
 	}
-	if (args.type == 's')
-		args.len_zero = 0;
-	return (args);
+	if (info->type == 's')
+		info->len_zero = 0;
 }
 
-t_args	set_output(t_args args)
+void	set_output(t_info *info)
 {
 	size_t	len_space;
 
-	args.index = 0;
-	if (args.type && *(args.fmt - 2) == '%')
-		return (copy_str(args, false));
-	args = calc_len_zero(args);
-	len_space = args.field_width - args.len_flagged_str - args.len_zero;
-	if (!args.minus)
-		args = fill_n_with_c(args, len_space, ' ');
-	args = set_sign_0x_space(args);
-	args = fill_n_with_c(args, args.len_zero, '0');
-	args = copy_str(args, true);
-	if (args.minus)
-		args = fill_n_with_c(args, len_space, ' ');
-	return (args);
+	info->index = 0;
+	if (info->type && *(info->fmt - 2) == '%')
+	{
+		copy_str(info, false);
+		return ;
+	}
+	calc_len_zero(info);
+	len_space = info->field_width - info->len_flagged_str - info->len_zero;
+	if (!info->minus)
+		fill_n_with_c(info, len_space, ' ');
+	set_sign_0x_space(info);
+	fill_n_with_c(info, info->len_zero, '0');
+	copy_str(info, true);
+	if (info->minus)
+		fill_n_with_c(info, len_space, ' ');
 }

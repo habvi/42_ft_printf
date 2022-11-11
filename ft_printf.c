@@ -1,83 +1,83 @@
 #include "ft_printf.h"
 
-static t_args	parse_format(t_args args)
+static void	parse_format(t_info *info, va_list *args_list)
 {
-	args.fmt++;
-	while (*args.fmt && ft_strchr(FORMAT_TYPES, *args.fmt) == NULL)
+	info->fmt++;
+	while (*info->fmt && ft_strchr(FORMAT_TYPES, *info->fmt) == NULL)
 	{
-		args = set_format_flags(args);
-		if (args.error)
-			return (args);
+		set_format_flags(info);
+		if (info->error)
+			return ;
 	}
-	check_ignored_flags(&args);
-	args.type = *args.fmt;
-	args = convert_to_str(args);
-	if (args.error)
-		return (args);
-	args.fmt++;
-	args = set_field_width(args);
-	args.output = (char *)malloc(sizeof(char) * args.field_width + 1);
-	if (args.output == NULL)
+	check_ignored_flags(info);
+	info->type = *info->fmt;
+	convert_to_str(info, args_list);
+	if (info->error)
+		return ;
+	info->fmt++;
+	set_field_width(info);
+	info->output = (char *)malloc(sizeof(char) * (info->field_width + 1));
+	if (info->output == NULL)
 	{
-		args.error = ERROR_MALLOC;
-		return (free_dup_str(args));
+		info->error = ERROR_MALLOC;
+		free_dup_str(info);
+		return ;
 	}
-	return (set_output(args));
+	set_output(info);
 }
 
-static t_args	format_specifier_mode(t_args args)
+static void	format_specifier_mode(t_info *info, va_list *args_list)
 {
-	args = parse_format(args);
-	if (args.error)
-		return (args);
-	args.is_format_specifier = false;
-	return (put_output(args));
+	parse_format(info, args_list);
+	if (info->error)
+		return ;
+	info->is_format_specifier = false;
+	put_output(info);
 }
 
-static t_args	normal_char_mode(t_args args)
+static void	normal_char_mode(t_info *info)
 {
-	while (*args.fmt && *args.fmt != '%')
+	while (*info->fmt && *info->fmt != '%')
 	{
-		if (write(STDOUT, args.fmt, 1) == ERROR || args.total_len == INT_MAX)
+		if (write(STDOUT, info->fmt, 1) == ERROR || info->total_len == INT_MAX)
 		{
-			args.error = EXIT;
-			return (args);
+			info->error = EXIT;
+			return ;
 		}
-		args.total_len++;
-		args.fmt++;
+		info->total_len++;
+		info->fmt++;
 	}
-	args.is_format_specifier = true;
-	if (!args.fmt)
-		args.fmt++;
-	return (args);
+	info->is_format_specifier = true;
+	if (!info->fmt)
+		info->fmt++;
 }
 
-static t_args	format_specifier_or_not(t_args args)
+static void	format_specifier_or_not(t_info *info, va_list *args_list)
 {
-	while (*args.fmt)
+	while (*info->fmt)
 	{
-		if (args.is_format_specifier)
+		if (info->is_format_specifier)
 		{
-			args = format_specifier_mode(args);
-			args = clear_fmt_info(args);
+			format_specifier_mode(info, args_list);
+			clear_fmt_info(info);
 		}
 		else
-			args = normal_char_mode(args);
-		if (args.error)
-			return (args);
+			normal_char_mode(info);
+		if (info->error)
+			return ;
 	}
-	return (args);
 }
 
 int	ft_printf(const char *format, ...)
 {
-	t_args		args;
+	t_info	info;
+	va_list	args_list;
 
-	va_start(args.args_list, format);
-	init_t_args(&args, format);
-	args = format_specifier_or_not(args);
-	va_end(args.args_list);
-	if (args.error)
+	va_start(args_list, format);
+	init_info(&info, format);
+	format_specifier_or_not(&info, &args_list);
+	va_end(args_list);
+	if (info.error)
 		return (ERROR);
-	return (args.total_len);
+	return (info.total_len);
 }

@@ -1,68 +1,73 @@
 #include "ft_printf.h"
 
-static t_args	set_for_mandatory(t_args args)
+static void	set_for_mandatory(t_info *info)
 {
-	args.field_width = args.len_str + args.is_negative_num;
-	return (args);
+	info->field_width = info->len_str + info->is_negative_num;
 }
 
-static bool	is_csp2_types(t_args args)
+static bool	is_csp2_types(t_info *info)
 {
-	return (args.type == 'c' || args.type == 's' || \
-			args.type == 'p' || args.type == '%');
+	return (info->type == 'c' || info->type == 's' || \
+			info->type == 'p' || info->type == '%');
 }
 
-static t_args	set_field_width_csp2(t_args args)
+static void	set_field_width_csp2(t_info *info)
 {
-	if (args.type == 'c')
-		args.field_width = ft_max(1, args.width);
+	if (info->type == 'c')
+		info->field_width = ft_max(1, info->width);
 	else
 	{
-		if (args.type == 's')
+		if (info->type == 's')
 		{
-			if (args.dot && args.precision < args.len_str)
-				args.len_str = args.precision;
+			if (info->dot && info->precision < info->len_str)
+				info->len_str = info->precision;
 		}
-		else if (args.type == '%')
+		else if (info->type == '%')
 		{
-			args.precision = 0;
-			args.space = false;
+			info->precision = 0;
+			info->space = false;
 		}
-		args.field_width = ft_max(args.width, args.len_str);
+		info->field_width = ft_max(info->width, info->len_str);
 	}
-	args.len_flagged_str = args.len_str;
-	return (args);
+	info->len_flagged_str = info->len_str;
 }
 
-static t_args	set_field_width_diux2(t_args args)
+static void	set_field_width_diux2(t_info *info)
 {
 	size_t	add_flag;
 
-	if (args.type == 'x' || args.type == 'X')
+	if (info->type == 'x' || info->type == 'X')
 	{
-		add_flag = (2 * args.hash);
-		if (args.hash && is_zero_num(args))
+		if (info->hash && !is_zero_num(info))
+			add_flag = 2;
+		else
 			add_flag = 0;
 	}
 	else
-		add_flag = (args.plus || args.is_negative_num || args.space);
-	if (args.dot && !args.precision && is_zero_num(args))
-		args.len_str = 0;
-	args.len_flagged_str = args.len_str + add_flag;
-	args.field_width = ft_max(args.width, args.len_flagged_str);
-	if (args.precision > args.len_str)
+		if (info->plus || info->is_negative_num || info->space)
+			add_flag = 1;
+		else
+			add_flag = 0;
+	if (info->dot && !info->precision && is_zero_num(info))
+		info->len_str = 0;
+	info->len_flagged_str = info->len_str + add_flag;
+	info->field_width = ft_max(info->width, info->len_flagged_str);
+	if (info->precision > info->len_str)
 	{
-		args.field_width = ft_max(args.field_width, \
-							ft_max(args.precision, args.len_str) + add_flag);
+		info->field_width = ft_max(info->field_width, \
+							ft_max(info->precision, info->len_str) + add_flag);
 	}
-	return (args);
 }
 
-t_args	set_field_width(t_args args)
+void	set_field_width(t_info *info)
 {
-	if (args.type && *(args.fmt - 2) == '%')
-		return (set_for_mandatory(args));
-	if (is_csp2_types(args))
-		return (set_field_width_csp2(args));
-	return (set_field_width_diux2(args));
+	if (info->type && *(info->fmt - 2) == '%')
+	{
+		set_for_mandatory(info);
+		return ;
+	}
+	if (is_csp2_types(info))
+		set_field_width_csp2(info);
+	else
+		set_field_width_diux2(info);
 }

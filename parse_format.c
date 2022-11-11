@@ -14,58 +14,56 @@ static bool	is_overflow(size_t num, int c)
 	return (false);
 }
 
-static t_args	atoi_for_printf(t_args args, size_t kind)
+static void	atoi_for_printf(t_info *info, size_t kind)
 {
 	size_t	*num;
 
 	if (kind == WIDTH)
-		num = &args.width;
+		num = &info->width;
 	else
-		num = &args.precision;
-	if (is_overflow(*num, *args.fmt))
+		num = &info->precision;
+	if (is_overflow(*num, *info->fmt))
 	{
 		if (kind == WIDTH)
-			args.error = ERROR_OVERFLOW;
+			info->error = ERROR_OVERFLOW;
 		else
 			*num = INT_MAX;
-		return (args);
+		return ;
 	}
-	*num = *num * 10 + *args.fmt - '0';
-	return (args);
+	*num = *num * 10 + *info->fmt - '0';
 }
 
-t_args	set_format_flags(t_args args)
+void	set_format_flags(t_info *info)
 {
-	const char	c = *args.fmt;
+	const char	c = *info->fmt;
 
-	if (args.dot)
+	if (info->dot)
 	{
-		args = atoi_for_printf(args, PRECISION);
-		args.fmt++;
-		return (args);
+		atoi_for_printf(info, PRECISION);
+		info->fmt++;
+		return ;
 	}
 	if (c == '-')
-		args.minus = true;
+		info->minus = true;
 	else if (c == '+')
-		args.plus = true;
+		info->plus = true;
 	else if (c == '#')
-		args.hash = true;
-	else if (c == '0' && !ft_isdigit(*(args.fmt - 1)))
-		args.zero = true;
+		info->hash = true;
+	else if (c == '0' && !ft_isdigit(*(info->fmt - 1)))
+		info->zero = true;
 	else if (c == '.')
-		args.dot = true;
+		info->dot = true;
 	else if (c == ' ')
-		args.space = true;
+		info->space = true;
 	else if (ft_isdigit(c))
-		args = atoi_for_printf(args, WIDTH);
-	args.fmt++;
-	return (args);
+		atoi_for_printf(info, WIDTH);
+	info->fmt++;
 }
 
-void	check_ignored_flags(t_args *args)
+void	check_ignored_flags(t_info *info)
 {
-	if (args->minus && args->zero)
-		args->zero = false;
-	if (args->plus && args->space)
-		args->space = false;
+	if (info->minus && info->zero)
+		info->zero = false;
+	if (info->plus && info->space)
+		info->space = false;
 }

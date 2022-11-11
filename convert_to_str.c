@@ -1,8 +1,8 @@
 #include "ft_printf.h"
 
-static t_args	convert_c_to_str(t_args args)
+static void	convert_c_to_str(t_info *info, va_list *args_list)
 {
-	const char	c = va_arg(args.args_list, int);
+	const char	c = va_arg(*args_list, int);
 	char		s_null[1];
 	char		s[2];
 
@@ -10,59 +10,59 @@ static t_args	convert_c_to_str(t_args args)
 	{
 		(void)s;
 		s_null[0] = c;
-		return (strdup_for_printf(args, s_null));
+		strdup_for_printf(info, s_null);
+		return ;
 	}
 	(void)s_null;
 	s[0] = c;
 	s[1] = '\0';
-	return (strdup_for_printf(args, s));
+	strdup_for_printf(info, s);
 }
 
-static t_args	convert_s_to_str(t_args args)
+static void	convert_s_to_str(t_info *info, va_list *args_list)
 {
-	const char	*s = va_arg(args.args_list, char*);
+	const char	*s = va_arg(*args_list, char*);
 
 	if (s == NULL)
 		s = "(null)";
-	return (strdup_for_printf(args, s));
+	strdup_for_printf(info, s);
 }
 
-static t_args	convert_p_to_str(t_args args)
+static void	convert_p_to_str(t_info *info, va_list *args_list)
 {
 	unsigned long long	addr;
 
-	addr = va_arg(args.args_list, unsigned long long);
-	return (ptoa_for_printf(addr, args));
+	addr = va_arg(*args_list, unsigned long long);
+	ptoa_for_printf(addr, info);
 }
 
-static t_args	convert_di_to_str(t_args args)
+static void	convert_di_to_str(t_info *info, va_list *args_list)
 {
-	const int	num = va_arg(args.args_list, int);
+	const int	num = va_arg(*args_list, int);
 
 	if (num < 0)
-		args.is_negative_num = true;
-	return (itoa_for_printf(num, args));
+		info->is_negative_num = true;
+	itoa_for_printf(num, info);
 }
 
-t_args	convert_to_str(t_args args)
+void	convert_to_str(t_info *info, va_list *args_list)
 {
-	const char	c = args.type;
+	const char	c = info->type;
 
 	if (c == 'c')
-		args = convert_c_to_str(args);
+		convert_c_to_str(info, args_list);
 	else if (c == 's')
-		args = convert_s_to_str(args);
+		convert_s_to_str(info, args_list);
 	else if (c == 'p')
-		args = convert_p_to_str(args);
+		convert_p_to_str(info, args_list);
 	else if (c == 'd' || c == 'i')
-		args = convert_di_to_str(args);
+		convert_di_to_str(info, args_list);
 	else if (c == 'u')
-		args = convert_u_to_str(args);
+		convert_u_to_str(info, args_list);
 	else if (c == 'x')
-		args = convert_x_to_str(args);
+		convert_x_to_str(info, args_list);
 	else if (c == 'X')
-		args = convert_upoperx_to_str(args);
+		convert_upperx_to_str(info, args_list);
 	else if (c == '%')
-		args = convert_percent_to_str(args);
-	return (args);
+		convert_percent_to_str(info);
 }

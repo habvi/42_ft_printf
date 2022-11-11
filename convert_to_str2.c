@@ -1,31 +1,31 @@
 #include "ft_printf.h"
 
-t_args	convert_u_to_str(t_args args)
+void	convert_u_to_str(t_info *info, va_list *args_list)
 {
-	const unsigned int	num = va_arg(args.args_list, unsigned int);
+	const unsigned int	num = va_arg(*args_list, unsigned int);
 
-	return (utoa_for_printf(num, args));
+	utoa_for_printf(num, info);
 }
 
-t_args	convert_x_to_str(t_args args)
+void	convert_x_to_str(t_info *info, va_list *args_list)
 {
-	const unsigned int	num = va_arg(args.args_list, unsigned int);
+	const unsigned int	num = va_arg(*args_list, unsigned int);
 
-	return (xtoa_for_printf(num, args, false));
+	xtoa_for_printf(num, info, false);
 }
 
-t_args	convert_upoperx_to_str(t_args args)
+void	convert_upperx_to_str(t_info *info, va_list *args_list)
 {
-	const unsigned int	num = va_arg(args.args_list, unsigned int);
+	const unsigned int	num = va_arg(*args_list, unsigned int);
 
-	return (xtoa_for_printf(num, args, true));
+	xtoa_for_printf(num, info, true);
 }
 
-t_args	convert_percent_to_str(t_args args)
+void	convert_percent_to_str(t_info *info)
 {
 	char	s[2];
 
 	s[0] = '%';
 	s[1] = '\0';
-	return (strdup_for_printf(args, s));
+	strdup_for_printf(info, s);
 }

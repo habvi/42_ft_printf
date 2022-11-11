@@ -17,9 +17,8 @@
 # define WIDTH			1
 # define PRECISION		2
 
-typedef struct s_args
+typedef struct s_info
 {
-	va_list		args_list;
 	const char	*fmt;
 	bool		is_format_specifier;
 	bool		minus;
@@ -41,50 +40,50 @@ typedef struct s_args
 	size_t		index;
 	size_t		error;
 	size_t		total_len;
-}	t_args;
+}	t_info;
 
 // ft_printf.c
 int		ft_printf(const char *format, ...);
 
 // handle_t_args.c
-void	init_t_args(t_args *args, const char *format);
-t_args	clear_fmt_info(t_args args);
-t_args	free_dup_str(t_args args);
-t_args	put_output(t_args args);
+void	init_info(t_info *info, const char *format);
+void	clear_fmt_info(t_info *info);
+void	free_dup_str(t_info *info);
+void	put_output(t_info *info);
 
 // parse_format.c
-t_args	set_format_flags(t_args args);
-void	check_ignored_flags(t_args *args);
+void	set_format_flags(t_info *info);
+void	check_ignored_flags(t_info *info);
 
 // convert_to_str.c
-t_args	convert_to_str(t_args args);
+void	convert_to_str(t_info *info, va_list *args_list);
 // convert_to_str2.c
-t_args	convert_u_to_str(t_args args);
-t_args	convert_x_to_str(t_args args);
-t_args	convert_upoperx_to_str(t_args args);
-t_args	convert_percent_to_str(t_args args);
+void	convert_u_to_str(t_info *info, va_list *args_list);
+void	convert_x_to_str(t_info *info, va_list *args_list);
+void	convert_upperx_to_str(t_info *info, va_list *args_list);
+void	convert_percent_to_str(t_info *info);
 
 // strdup_for_printf.c
-t_args	strdup_for_printf(t_args args, const char *src);
+void	strdup_for_printf(t_info *info, const char *src);
 
 // itoa_utoa_for_printf.c
-t_args	itoa_for_printf(int n, t_args args);
-t_args	utoa_for_printf(unsigned int n, t_args args);
+void	itoa_for_printf(int n, t_info *info);
+void	utoa_for_printf(unsigned int n, t_info *info);
 // ptoa_xtoa_for_printf.c
-t_args	ptoa_for_printf(unsigned long long n, t_args args);
-t_args	xtoa_for_printf(unsigned int n, t_args args, bool is_upper);
+void	ptoa_for_printf(unsigned long long n, t_info *info);
+void	xtoa_for_printf(unsigned int n, t_info *info, bool is_upper);
 
 // set_field.c
-t_args	set_field_width(t_args args);
+void	set_field_width(t_info *info);
 
 // set_output.c
-t_args	set_output(t_args args);
+void	set_output(t_info *info);
 
 // utils.c
 char	*ft_strchr(const char *s, int int_c);
 bool	ft_isdigit(int c);
 int		ft_toupper(int c);
 size_t	ft_max(size_t x, size_t y);
-bool	is_zero_num(t_args args);
+bool	is_zero_num(t_info *info);
 
 #endif

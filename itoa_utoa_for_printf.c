@@ -26,14 +26,14 @@ static char	*set_to_list(size_t num, size_t len)
 	return (res);
 }
 
-t_args	itoa_for_printf(int n, t_args args)
+void	itoa_for_printf(int n, t_info *info)
 {
 	size_t	num;
 	size_t	len;
 
 	if (n < 0)
 	{
-		args.is_negative_num = true;
+		info->is_negative_num = true;
 		if (n == INT_MIN)
 			num = (size_t)(-(n + 1)) + 1;
 		else
@@ -42,23 +42,21 @@ t_args	itoa_for_printf(int n, t_args args)
 	else
 		num = n;
 	len = count_length(num, 0) + (n == 0);
-	args.dup_str = set_to_list(num, len);
-	if (args.dup_str == NULL)
-		args.error = ERROR_MALLOC;
-	args.len_str = len;
-	return (args);
+	info->dup_str = set_to_list(num, len);
+	if (info->dup_str == NULL)
+		info->error = ERROR_MALLOC;
+	info->len_str = len;
 }
 
-t_args	utoa_for_printf(unsigned int n, t_args args)
+void	utoa_for_printf(unsigned int n, t_info *info)
 {
 	size_t	num;
 	size_t	len;
 
 	num = n;
 	len = count_length(num, 0) + (n == 0);
-	args.dup_str = set_to_list(num, len);
-	if (args.dup_str == NULL)
-		args.error = ERROR_MALLOC;
-	args.len_str = len;
-	return (args);
+	info->dup_str = set_to_list(num, len);
+	if (info->dup_str == NULL)
+		info->error = ERROR_MALLOC;
+	info->len_str = len;
 }

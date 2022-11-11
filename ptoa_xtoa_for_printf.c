@@ -26,23 +26,22 @@ static char	*set_to_list_for_p(size_t num, size_t start, size_t len)
 	return (res);
 }
 
-t_args	ptoa_for_printf(unsigned long long n, t_args args)
+void	ptoa_for_printf(unsigned long long n, t_info *info)
 {
 	size_t	num;
 	size_t	len;
 
 	num = n;
 	len = count_length(num, 0) + 2 + (n == 0);
-	args.dup_str = set_to_list_for_p(num, 2, len);
-	if (args.dup_str == NULL)
+	info->dup_str = set_to_list_for_p(num, 2, len);
+	if (info->dup_str == NULL)
 	{
-		args.error = ERROR_MALLOC;
-		return (args);
+		info->error = ERROR_MALLOC;
+		return ;
 	}
-	args.dup_str[0] = '0';
-	args.dup_str[1] = 'x';
-	args.len_str = len;
-	return (args);
+	info->dup_str[0] = '0';
+	info->dup_str[1] = 'x';
+	info->len_str = len;
 }
 
 static char	*set_to_list_for_x(size_t num, size_t len, bool is_upper)
@@ -68,16 +67,15 @@ static char	*set_to_list_for_x(size_t num, size_t len, bool is_upper)
 	return (res);
 }
 
-t_args	xtoa_for_printf(unsigned int n, t_args args, bool is_upper)
+void	xtoa_for_printf(unsigned int n, t_info *info, bool is_upper)
 {
 	size_t	num;
 	size_t	len;
 
 	num = n;
 	len = count_length(num, 0) + (n == 0);
-	args.dup_str = set_to_list_for_x(num, len, is_upper);
-	if (args.dup_str == NULL)
-		args.error = ERROR_MALLOC;
-	args.len_str = len;
-	return (args);
+	info->dup_str = set_to_list_for_x(num, len, is_upper);
+	if (info->dup_str == NULL)
+		info->error = ERROR_MALLOC;
+	info->len_str = len;
 }

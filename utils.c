@@ -35,7 +35,7 @@ size_t	ft_max(size_t x, size_t y)
 	return (y);
 }
 
-bool	is_zero_num(t_args args)
+bool	is_zero_num(t_info *info)
 {
-	return (args.len_str <= 1 && args.dup_str[0] == '0');
+	return (info->len_str <= 1 && info->dup_str[0] == '0');
 }

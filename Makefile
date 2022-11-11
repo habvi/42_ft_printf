@@ -1,5 +1,5 @@
 SRCS		=	ft_printf.c \
-				handle_t_args.c \
+				handle_info.c \
 				parse_format.c \
 				convert_to_str.c \
 				convert_to_str2.c \
