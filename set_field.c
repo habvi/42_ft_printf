@@ -44,10 +44,12 @@ static void	set_field_width_diux2(t_info *info)
 			add_flag = 0;
 	}
 	else
+	{
 		if (info->plus || info->is_negative_num || info->space)
 			add_flag = 1;
 		else
 			add_flag = 0;
+	}
 	if (info->dot && !info->precision && is_zero_num(info))
 		info->len_str = 0;
 	info->len_flagged_str = info->len_str + add_flag;
