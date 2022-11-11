@@ -54,8 +54,11 @@ t_args	free_dup_str(t_args args)
 
 t_args	put_output(t_args args)
 {
-	args.total_len += write(STDOUT, args.output, args.index);
-	if (args.total_len >= INT_MAX)
+	ssize_t	res;
+
+	res = write(STDOUT, args.output, args.index);
+	args.total_len += res;
+	if (res == -1 || args.total_len >= INT_MAX)
 	{
 		free(args.output);
 		args.error = EXIT;

@@ -38,12 +38,11 @@ static t_args	normal_char_mode(t_args args)
 {
 	while (*args.fmt && *args.fmt != '%')
 	{
-		if (args.total_len == INT_MAX)
+		if (write(STDOUT, args.fmt, 1) == ERROR || args.total_len == INT_MAX)
 		{
 			args.error = EXIT;
 			return (args);
 		}
-		write(STDOUT, args.fmt, 1);
 		args.total_len++;
 		args.fmt++;
 	}
