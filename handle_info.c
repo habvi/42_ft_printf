@@ -54,7 +54,7 @@ void	put_output(t_info *info)
 {
 	ssize_t	res;
 
-	res = write(STDOUT, info->output, info->index);
+	res = write(STDOUT_FILENO, info->output, info->index);
 	info->total_len += res;
 	if (res == -1 || info->total_len >= INT_MAX)
 	{

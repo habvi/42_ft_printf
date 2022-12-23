@@ -39,7 +39,7 @@ static void	normal_char_mode(t_info *info)
 {
 	while (*info->fmt && *info->fmt != '%')
 	{
-		if (write(STDOUT, info->fmt, 1) == ERROR || info->total_len == INT_MAX)
+		if (write(STDOUT_FILENO, info->fmt, 1) == ERROR || info->total_len == INT_MAX)
 		{
 			info->error = EXIT;
 			return ;

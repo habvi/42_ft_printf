@@ -7,7 +7,6 @@
 # include <limits.h>
 # include <stdlib.h>
 
-# define STDOUT			1
 # define FORMAT_TYPES	"cspdiuxX%"
 # define ERROR_MALLOC	1
 # define ERROR_OVERFLOW	2
